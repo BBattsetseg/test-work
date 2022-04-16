@@ -1,12 +1,30 @@
 <script>
-import { data2 } from "../data/data2";
+import axios from "axios";
 
 export default {
-  name: "Table1",
+  name: "data2",
   data() {
     return {
-      boardFields: data2,
+      datas: [],
     };
+  },
+
+  async created() {
+    try {
+      const res = await axios.get(`http://localhost:3001/data2`);
+      this.datas = res.data;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  
+  methods: {
+    handler(event) {
+      alert(`Hello ${this.name}!`);
+      if (event) {
+        alert(event.target.tagName);
+      }
+    },
   },
 };
 </script>
@@ -15,7 +33,9 @@ export default {
   <div class="m-10">
     <div class="flex justify-between mb-4">
       <h4>Төхөөрөмжийн жагсаалт 2</h4>
-      <button class="bg-green-700 p-2 rounded-md text-white">Бүртгэх</button>
+      <button @click="handler" class="bg-green-700 p-2 rounded-md text-white">
+        Бүртгэх
+      </button>
     </div>
     <div>
       <div
@@ -30,7 +50,7 @@ export default {
         <thead>
           <tr class="border-2 border-slate-200 border-solid">
             <th class="w-24"></th>
-            <th>Сериал дугаа</th>
+            <th>Сериал дугаар</th>
             <th>Нэр</th>
             <th>Тайлбар</th>
             <th>Бүртгэгдсэн огноо</th>
@@ -46,7 +66,7 @@ export default {
           </tr>
         </tbody>
         <tbody class="divide-y-2 divide-slate-200 divide-solid">
-          <tr v-for="item in boardFields" :key="item.id">
+          <tr v-for="item in datas" :key="item.id">
             <td class="w-24 pl-8">
               <img class="w-5 h-5" src="../delete.webp" alt="" />
             </td>
