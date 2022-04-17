@@ -1,13 +1,13 @@
 <script >
-import Table from '../components/Table.vue';
+import Table from "../components/Table.vue";
 import Table2 from "../components/Table2.vue";
-import { useState } from '../composables/state';
+import { useState } from "../composables/state";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: { Table, Table2 },
   setup() {
-    const [state, setState] = useState(1);  
+    const [state, setState] = useState(1);
     return {
       state,
       setState,
@@ -21,7 +21,15 @@ export default {
     <div class="h-screen bg-slate-600 w-1/5">
       <div>
         <div
-          class="bg-slate-800 h-14 text-white align-middle flex justify-center items-center"
+          class="
+            bg-slate-800
+            h-14
+            text-white
+            align-middle
+            flex
+            justify-center
+            items-center
+          "
         >
           <div class="flex-shrink-0 w-10 h-10 align-middle mr-4">
             <img class="w-full h-full rounded-full" src="./logo.png" alt="" />
@@ -29,18 +37,22 @@ export default {
           <h4>ГЭРЭГЭ СИСТЕМС ХХК</h4>
         </div>
         <div class="text-white cursor-pointer">
-          <div @click="setState(1)" class="m-8 hover:text-slate-800">Салбар, төхөөрөмж-1</div>
-          <div @click="setState(2)" class="m-8 hover:text-slate-800">Салбар, төхөөрөмж-2</div>
+          <div @click="setState(1)" class="m-8 hover:text-slate-800">
+            Салбар, төхөөрөмж-1
+          </div>
+          <div @click="setState(2)" class="m-8 hover:text-slate-800">
+            Салбар, төхөөрөмж-2
+          </div>
         </div>
       </div>
     </div>
     <div class="h-screen bg-slate-100 w-4/5">
       <template v-if="state == 1">
-        <Table/>
+        <Table />
       </template>
 
       <template v-else>
-        <Table2/>
+        <Table2 />
       </template>
     </div>
   </div>

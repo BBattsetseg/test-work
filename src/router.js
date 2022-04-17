@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from '../src/pages/Home.vue';
 import RegisterModal from '../src/components/RegisterModal.vue'
+import RegisterModal2 from '../src/components/RegisterModal2.vue'
 import ModalEdit from '../src/components/EditModal.vue'
 
 const routes = [
@@ -13,6 +14,11 @@ const routes = [
         path:'/create',
         name:'modal.create',
         component: RegisterModal
+    },
+    {
+        path:'/create2',
+        name:'modal.create2',
+        component: RegisterModal2
     },
     {
         path:'/edit/:id',

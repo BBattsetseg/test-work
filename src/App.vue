@@ -4,6 +4,7 @@
 </template>
 <script>
 import Home from "../src/pages/Home.vue";
+import 'material-icons/iconfont/material-icons.css';
 export default {
   components: {
     Home,

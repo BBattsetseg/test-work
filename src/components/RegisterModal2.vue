@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export default {
-  name: "RegisterModal",
+  name: "RegisterModal2",
   setup() {},
 
   data() {
@@ -31,13 +31,13 @@ export default {
           date: this.date,
         };
 
-        let res = await axios.post("http://localhost:3001/data1", payload);
+        let res = await axios.post("http://localhost:3001/data2", payload);
         let data = res.data;
         console.log(data);
       } catch (e) {
         console.error(e);
       }
-      this.$router.push("/");
+      this.$router.back();
     },
   },
 };
