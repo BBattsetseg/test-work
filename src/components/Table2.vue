@@ -43,6 +43,27 @@ export default {
         }
       }
     },
+       async edit(id) {
+      try {
+        const res = await BaseUrl.get(`data2/${id}`);
+        alert("edit modal");
+        let editdatas = res.data;
+        console.log(editdatas);
+        this.$router.push({
+          path: `/edit2/${id}`,
+          query: {
+            serialNum: editdatas.serialNum,
+            id: editdatas.id,
+            serialNum: editdatas.serialNum,
+            name: editdatas.name,
+            detail: editdatas.detail,
+            date: editdatas.date,
+          },
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
   },
 };
 </script>
@@ -150,7 +171,7 @@ export default {
       >
         <thead>
           <tr class="border-2 border-slate-200 border-solid">
-            <!-- <th class="w-16"></th> -->
+            <th class="w-16"></th>
             <th class="w-16"></th>
             <th>Сериал дугаар</th>
             <th>Нэр</th>
@@ -160,7 +181,7 @@ export default {
         </thead>
         <tbody class="divide-y-2 divide-slate-200 divide-solid">
           <tr>
-            <!-- <td class="w-16"></td> -->
+            <td class="w-16"></td>
             <td class="w-16"></td>
             <td class="px-2"><input class="w-full" /></td>
             <td class="px-2"><input class="w-full" /></td>
@@ -173,13 +194,13 @@ export default {
             <td class="w-16 pl-8 cursor-pointer" @click="deleteModal(item.id)">
               <img class="w-5 h-5" src="../delete.webp" alt="" />
             </td>
-            <!-- <td class="w-16 pl-8 cursor-pointer" @click="editModal(item.id)">
+            <td class="w-16 pl-8 cursor-pointer" @click="edit(item.id)">
                  <span
-                class=" material-icons "
+                class=" material-icons hover:text-blue-600"
               >
                 edit
               </span>
-            </td> -->
+            </td>
             <td>{{ item.serialNum }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.detail }}</td>

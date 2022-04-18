@@ -45,9 +45,16 @@
     {
       "id": 386,
       "serialNum": "pd98989898989",
-      "name": "gergerer",
+      "name": "gerege",
       "detail": "ghgghghghg",
       "date": "2022-04-18"
+    },
+    {
+      "id": 959,
+      "serialNum": "hello world",
+      "name": "gerege systems",
+      "detail": "hello world",
+      "date": "2022-04-13"
     }
   ],
   "data2": [
@@ -81,10 +88,17 @@
     },
     {
       "id": 436,
-      "serialNum": "pd123456",
+      "serialNum": "pd123456789",
       "name": "gerege systems",
-      "detail": "ghjjjklk",
+      "detail": "pd123456789",
       "date": "2022-04-18"
+    },
+    {
+      "id": 779,
+      "serialNum": "pd9876858844",
+      "name": "gerege sys",
+      "detail": "hgughughughu",
+      "date": "2022-04-13"
     }
   ]
 }
