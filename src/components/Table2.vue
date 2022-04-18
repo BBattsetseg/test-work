@@ -1,12 +1,36 @@
 <script>
 import axios from "axios";
+import { onMounted, reactive,ref,computed } from "vue";
 import RegisterModal2 from "../components/RegisterModal2.vue";
 import BaseUrl from "../api/testApi";
 export default {
   components: { RegisterModal2 },
+ 
   setup() {
-    //Pagination
+    const products = reactive([]);
+    const searchQuery = ref("");
+    const searchedProducts = computed(() => {
+      return products.filter((product) => {
+        return (
+          product.serialNum
+            .toLowerCase()
+            .indexOf(searchQuery.value.toLowerCase()) != -1
+        );
+      });
+    });
+    onMounted(async () => {
+      try {
+        const res = await axios.get(`http://localhost:3001/data2`);
+        res.data.forEach((doc) => {
+          products.push(doc);
+        });
+      } catch (e) {
+        console.log("Error Loading Products");
+      }
+    });
+    return { searchedProducts, searchQuery };
   },
+
   name: "data2",
   data() {
     return {
@@ -183,14 +207,16 @@ export default {
           <tr>
             <td class="w-16"></td>
             <td class="w-16"></td>
-            <td class="px-2"><input class="w-full" /></td>
+            <td class="px-2"><input class="w-full" v-model="searchQuery" placeholder=" Search ..."/>
+            </td>
             <td class="px-2"><input class="w-full" /></td>
             <td class="px-2"><input class="w-full" /></td>
             <td class="px-2"></td>
           </tr>
         </tbody>
         <tbody class="divide-y-2 divide-slate-200 divide-solid">
-          <tr v-for="item in datas" :key="item.id">
+          <!-- <tr v-for="item in datas" :key="item.id"> -->
+              <tr v-for="item in searchedProducts" :key="item.id"> 
             <td class="w-16 pl-8 cursor-pointer" @click="deleteModal(item.id)">
               <img class="w-5 h-5" src="../delete.webp" alt="" />
             </td>
