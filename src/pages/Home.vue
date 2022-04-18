@@ -1,17 +1,25 @@
 <script >
 import Table from "../components/Table.vue";
-import Table2 from "../components/Table2.vue";
 import { useState } from "../composables/state";
 
 export default {
   name: "Home",
-  components: { Table, Table2 },
+  components:  {Table} ,
   setup() {
     const [state, setState] = useState(1);
     return {
       state,
       setState,
     };
+  },
+
+  data(){
+    return{
+      dataa1:"data1",
+      dataa2:"data2",
+      tableTitle1: "Төхөөрөмжийн жагсаалт-1",
+      tableTitle2: "Төхөөрөмжийн жагсаалт-2",
+    }
   },
 };
 </script>
@@ -48,11 +56,11 @@ export default {
     </div>
     <div class="h-screen bg-slate-100 w-4/5">
       <template v-if="state == 1">
-        <Table />
+        <Table :dataName="dataa1" :tableTitle="tableTitle1" key="1"/>
       </template>
 
       <template v-else>
-        <Table2 />
+        <Table :dataName="dataa2" :tableTitle="tableTitle2" key="2"/>
       </template>
     </div>
   </div>

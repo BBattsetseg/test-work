@@ -1,12 +1,19 @@
 <script>
 import axios from "axios";
 import { onMounted, reactive,ref,computed } from "vue";
+ //import Paginate from 'vuejs-paginate-next';
 import RegisterModal from "../components/RegisterModal.vue";
 import BaseUrl from "../api/testApi";
 export default {
+  name: "Table",
   components: { RegisterModal },
-
-  setup() {
+  props: {
+    dataName: String,
+    tableTitle: String
+  },
+  setup(props) {
+    const dataName = props.dataName;
+    const tableTitle = props.tableTitle;
     const products = reactive([]);
     const searchQuery = ref("");
     const searchedProducts = computed(() => {
@@ -20,7 +27,7 @@ export default {
     });
     onMounted(async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/data1`);
+        const res = await axios.get(`http://localhost:3001/${dataName}`);
         res.data.forEach((doc) => {
           products.push(doc);
         });
@@ -28,10 +35,10 @@ export default {
         console.log("Error Loading Products");
       }
     });
-    return { searchedProducts, searchQuery };
+    return { searchedProducts, searchQuery, dataName,tableTitle };
   },
 
-  name: "data1",
+  // name: dataName,
   data() {
     return {
       datas: [],
@@ -40,7 +47,7 @@ export default {
 
   async created() {
     try {
-      const res = await axios.get(`http://localhost:3001/data1`);
+      const res = await axios.get(`http://localhost:3001/${this.dataName}`);
       this.datas = res.data;
     } catch (e) {
       console.error(e);
@@ -48,9 +55,16 @@ export default {
   },
 
   methods: {
+
+    //Create Modal
     handler(event) {
       if (event) {
-        this.$router.push("/create");
+          this.$router.push({
+          path: `/create`,
+          query: {
+            dataName: this.dataName,
+          },
+        });
       }
     },
 
@@ -58,7 +72,7 @@ export default {
       let confirm = window.confirm("Want to delete this user ?");
       if (confirm) {
         try {
-          const res = await BaseUrl.delete(`data1/${id}`);
+          const res = await BaseUrl.delete(`${this.dataName}/${id}`);
           alert("Амжилттай устсан тул browser-оо refresh хийнэ үү");
           this.$router.push("/");
         } catch (e) {
@@ -66,12 +80,13 @@ export default {
         }
       }
     },
+
+    //Edit Modal
     async edit(id) {
       try {
-        const res = await BaseUrl.get(`data1/${id}`);
+        const res = await BaseUrl.get(`${this.dataName}/${id}`);
         alert("edit modal");
         let editdatas = res.data;
-        console.log(editdatas);
         this.$router.push({
           path: `/edit/${id}`,
           query: {
@@ -81,19 +96,21 @@ export default {
             name: editdatas.name,
             detail: editdatas.detail,
             date: editdatas.date,
+            dataName:this.dataName
           },
         });
       } catch (e) {
         console.error(e);
       }
     },
-  },
+
+  }
 };
 </script>
 <template>
   <div class="m-10">
     <div class="flex justify-between mb-4">
-      <h4 class="text-xl">Төхөөрөмжийн жагсаалт-1</h4>
+      <h4 class="text-xl">{{tableTitle}}</h4>
       <button @click="handler" class="bg-green-700 p-2 rounded-md text-white">
         Бүртгэх
       </button>
@@ -102,7 +119,7 @@ export default {
       <div
         class="flex justify-between mb-2 border-t border-slate-200 border-solid"
       >
-        <p>Нийт {{ datas.length }}</p>
+        <p>Нийт {{ searchedProducts.length }}</p>
         <!-- <p>Xуудас 1/1> Мөрийн тоо: {{ datas.length }}</p> -->
 
         <!-- //////////////////////////////// -->
@@ -178,7 +195,7 @@ export default {
               </span>
             </a>
             <p class="font-bold px-2 py-2 text-gray-700">
-              Мөрийн тоо: {{ datas.length }}
+              Мөрийн тоо: {{ searchedProducts.length }}
             </p>
           </div>
         </div>
@@ -230,6 +247,17 @@ export default {
           </tr>
         </tbody>
       </table>
-    </div>
+    </div>   
   </div>
 </template>
+
+<style lang="css">
+  /* Adopt bootstrap pagination stylesheet. */
+  @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";
+
+  /* Write your own CSS for pagination */
+  .pagination {
+  }
+  .page-item {
+  }
+</style>

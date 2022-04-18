@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export default {
-  name: "ModalEdit",
+  name: "ModalEdit", 
   setup() {},
   data() {
     let edatas = {
@@ -11,13 +11,15 @@ export default {
       name: this.$route.query.name,
       detail: this.$route.query.detail,
       date: this.$route.query.date, 
+      dataName: this.$route.query.dataName
     }
    return {
       id: edatas.id,
       serialNum: edatas.serialNum,
       name: edatas.name,
       detail: edatas.detail,
-      date: edatas.date,    
+      date: edatas.date, 
+      dataName: edatas.dataName   
     };
   },
 
@@ -37,9 +39,7 @@ export default {
           date: this.date,
         };
 
-        let res = await axios.put(`http://localhost:3001/data1/${this.id}`, payload);
-        let data = res.data;
-        console.log(data);
+        let res = await axios.put(`http://localhost:3001/${this.dataName}/${this.id}`, payload);       
       } catch (e) {
         console.error(e);
       }

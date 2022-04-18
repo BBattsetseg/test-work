@@ -3,15 +3,19 @@ import axios from "axios";
 
 export default {
   name: "RegisterModal",
-  setup() {},
+  setup() {
+   
+  },
 
   data() {
+     const dataName = this.$route.query.dataName;
     return {
       id: Math.floor(Math.random(10) * 1000),
       serialNum: "",
       name: "",
       detail: "",
       date: "",
+      dataName: dataName
     };
   },
 
@@ -31,9 +35,7 @@ export default {
           date: this.date,
         };
 
-        let res = await axios.post("http://localhost:3001/data1", payload);
-        let data = res.data;
-        console.log(data);
+        let res = await axios.post(`http://localhost:3001/${this.dataName}`, payload);
       } catch (e) {
         console.error(e);
       }
