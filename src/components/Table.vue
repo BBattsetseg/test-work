@@ -1,7 +1,7 @@
 <script>
 import axios from "axios";
-import { onMounted, reactive,ref,computed } from "vue";
- //import Paginate from 'vuejs-paginate-next';
+import { onMounted, reactive, ref, computed } from "vue";
+//import Paginate from 'vuejs-paginate-next';
 import RegisterModal from "../components/RegisterModal.vue";
 import BaseUrl from "../api/testApi";
 export default {
@@ -9,13 +9,22 @@ export default {
   components: { RegisterModal },
   props: {
     dataName: String,
-    tableTitle: String
+    tableTitle: String,
   },
+  mounted:function(){
+          this.validateEachPage(1);
+    },
   setup(props) {
     const dataName = props.dataName;
     const tableTitle = props.tableTitle;
     const products = reactive([]);
     const searchQuery = ref("");
+    let currentPage = ref(1);
+    let CountPerEachPage = 3;
+    let pagedDatas = reactive([]);
+    
+
+    
     const searchedProducts = computed(() => {
       return products.filter((product) => {
         return (
@@ -25,23 +34,41 @@ export default {
         );
       });
     });
+
+    const numberOfPages=()=> {
+    console.log(products.length)
+      return Math.ceil(products.length / CountPerEachPage);
+      };
+
     onMounted(async () => {
-      try {
+      try {   
         const res = await axios.get(`http://localhost:3001/${dataName}`);
         res.data.forEach((doc) => {
           products.push(doc);
         });
+       
+
       } catch (e) {
         console.log("Error Loading Products");
       }
     });
-    return { searchedProducts, searchQuery, dataName,tableTitle };
+    return {
+      searchedProducts,
+      numberOfPages,
+      searchQuery,
+      dataName,
+      tableTitle,
+      currentPage,
+      CountPerEachPage,
+      pagedDatas
+      
+    };
   },
 
   // name: dataName,
   data() {
     return {
-      datas: [],
+      datas: ref([]),
     };
   },
 
@@ -55,11 +82,10 @@ export default {
   },
 
   methods: {
-
     //Create Modal
     handler(event) {
       if (event) {
-          this.$router.push({
+        this.$router.push({
           path: `/create`,
           query: {
             dataName: this.dataName,
@@ -96,21 +122,63 @@ export default {
             name: editdatas.name,
             detail: editdatas.detail,
             date: editdatas.date,
-            dataName:this.dataName
+            dataName: this.dataName,
           },
         });
       } catch (e) {
         console.error(e);
       }
     },
+    //Pagination
+    validateEachPage(paginationPage) {
+      //validating pages based on page count
+      if (paginationPage < 1) paginationPage = 1;
+      if (paginationPage > this.numberOfPages())
+        paginationPage = this.numberOfPages();
+      this.pagedDatas=[];
 
-  }
+      for (
+        var i = (paginationPage - 1) * this.CountPerEachPage;
+        i < paginationPage * this.CountPerEachPage;
+        i++
+      ) {
+     if(this.datas[i]!==undefined){
+       const dataobj = [this.datas[i]];
+       dataobj.forEach((data)=> this.pagedDatas.push(data))
+       console.log(dataobj)
+     }
+     
+      }
+    },
+    ////function for go to previous page
+    getPereviousPage() {
+      try {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+          this.validateEachPage(this.currentPage);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    //function for go to next page
+    getNextPage() {
+      try {
+        if (this.currentPage < this.numberOfPages()) {
+          this.currentPage++;
+          this.validateEachPage(this.currentPage);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  },
 };
 </script>
 <template>
   <div class="m-10">
     <div class="flex justify-between mb-4">
-      <h4 class="text-xl">{{tableTitle}}</h4>
+      <h4 class="text-xl">{{ tableTitle }}</h4>
       <button @click="handler" class="bg-green-700 p-2 rounded-md text-white">
         Бүртгэх
       </button>
@@ -120,12 +188,10 @@ export default {
         class="flex justify-between mb-2 border-t border-slate-200 border-solid"
       >
         <p>Нийт {{ searchedProducts.length }}</p>
-        <!-- <p>Xуудас 1/1> Мөрийн тоо: {{ datas.length }}</p> -->
-
-        <!-- //////////////////////////////// -->
         <div class="items-center justify-between">
           <div class="flex items-center space-x-5">
             <a
+              @click="getPereviousPage"
               class="
                 flex
                 items-center
@@ -162,7 +228,7 @@ export default {
                 cursor-pointer
               "
             >
-              1
+               {{ currentPage }}
             </a>
             <p>/</p>
             <a
@@ -177,10 +243,14 @@ export default {
                 cursor-pointer
               "
             >
-              1
+            
+               {{ this.numberOfPages() }}
             </a>
 
-            <a class="px-2 py-2 font-bold cursor-pointer rounded-3xl">
+            <a
+              @click="getNextPage"
+              class="px-2 py-2 font-bold cursor-pointer rounded-3xl"
+            >
               <span
                 class="
                   transition
@@ -223,41 +293,40 @@ export default {
           <tr>
             <td class="w-16"></td>
             <td class="w-16"></td>
-            <td class="px-2"><input class="w-full" v-model="searchQuery" placeholder=" Search ..."/>
+            <td class="px-2">
+              <input
+                class="w-full"
+                v-model="searchQuery"
+                placeholder=" Search ..."
+              />
             </td>
             <td class="px-2"><input class="w-full" /></td>
             <td class="px-2"><input class="w-full" /></td>
             <td class="px-2"></td>
           </tr>
         </tbody>
-        <tbody class="divide-y-2 divide-slate-200 divide-solid">
-          <!-- <tr v-for="item in datas" :key="item.id"> -->
-           <tr v-for="item in searchedProducts"
-      :key="item.id">
-            <td class="w-16 pl-8 cursor-pointer" @click="deleteModal(item.id)">
-              <img class="w-5 h-5" src="../delete.webp" alt="" />
-            </td>
-            <td class="w-16 pl-8 cursor-pointer" @click="edit(item.id)">
-              <span class="material-icons hover:text-blue-600"> edit </span>
-            </td>
-            <td>{{ item.serialNum }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.detail }}</td>
-            <td>{{ item.date }}</td>
-          </tr>
-        </tbody>
+      
+          <tbody class="divide-y-2 divide-slate-200 divide-solid">
+            <!-- <tr v-for="item in searchedProducts" :key="item.id"> -->
+            <tr v-for="item in (this.searchQuery ? searchedProducts : this.pagedDatas)" :key="item.id">
+              <td class="w-16 pl-8 cursor-pointer" @click="deleteModal(item.id)">
+                <img class="w-5 h-5" src="../delete.webp" alt="" />
+              </td>
+              <td class="w-16 pl-8 cursor-pointer" @click="edit(item.id)">
+                <span class="material-icons hover:text-blue-600"> edit </span>
+              </td>
+              <td>{{ item.serialNum }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.detail }}</td>
+              <td>{{ item.date }}</td>
+            </tr>
+          </tbody>
+        
       </table>
-    </div>   
+    </div>
   </div>
 </template>
 
 <style lang="css">
-  /* Adopt bootstrap pagination stylesheet. */
-  @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";
-
-  /* Write your own CSS for pagination */
-  .pagination {
-  }
-  .page-item {
-  }
+@import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";
 </style>

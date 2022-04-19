@@ -15,10 +15,8 @@ export default {
 
   data(){
     return{
-      dataa1:"data1",
-      dataa2:"data2",
-      tableTitle1: "Төхөөрөмжийн жагсаалт-1",
-      tableTitle2: "Төхөөрөмжийн жагсаалт-2",
+      dataUrlNames:["data1","data2"],
+      tableTitleNames: ["Төхөөрөмжийн жагсаалт-1","Төхөөрөмжийн жагсаалт-2"],
     }
   },
 };
@@ -56,11 +54,11 @@ export default {
     </div>
     <div class="h-screen bg-slate-100 w-4/5">
       <template v-if="state == 1">
-        <Table :dataName="dataa1" :tableTitle="tableTitle1" key="1"/>
+        <Table :dataName="dataUrlNames[0]" :tableTitle="tableTitleNames[0]" key="1"/>
       </template>
 
       <template v-else>
-        <Table :dataName="dataa2" :tableTitle="tableTitle2" key="2"/>
+        <Table :dataName="dataUrlNames[1]" :tableTitle="tableTitleNames[1]" key="2"/>
       </template>
     </div>
   </div>
