@@ -1,30 +1,21 @@
 <script>
 import axios from "axios";
 import { onMounted, reactive, ref, computed } from "vue";
-//import Paginate from 'vuejs-paginate-next';
 import RegisterModal from "../components/RegisterModal.vue";
 import BaseUrl from "../api/testApi";
+import { useRoute } from "vue-router";
 export default {
   name: "Table",
-  components: { RegisterModal },
-  props: {
-    dataName: String,
-    tableTitle: String,
-  },
-  mounted:function(){
-          this.validateEachPage(1);
-    },
-  setup(props) {
-    const dataName = props.dataName;
-    const tableTitle = props.tableTitle;
+  setup() {
     const products = reactive([]);
     const searchQuery = ref("");
     let currentPage = ref(1);
-    let CountPerEachPage = 3;
+    let CountPerEachPage = 8;
     let pagedDatas = reactive([]);
-    
+    const route = useRoute();
+    const dataName = route.params.id;
+    const title = route.query.title;
 
-    
     const searchedProducts = computed(() => {
       return products.filter((product) => {
         return (
@@ -35,55 +26,37 @@ export default {
       });
     });
 
-    const numberOfPages=()=> {
-    console.log(products.length)
+    const numberOfPages = () => {
       return Math.ceil(products.length / CountPerEachPage);
-      };
+    };
 
     onMounted(async () => {
-      try {   
+      try {
         const res = await axios.get(`http://localhost:3001/${dataName}`);
         res.data.forEach((doc) => {
           products.push(doc);
         });
-       
-
       } catch (e) {
-        console.log("Error Loading Products");
+        console.log("Error Loading Mount");
       }
     });
+
     return {
       searchedProducts,
       numberOfPages,
       searchQuery,
+      products,
       dataName,
-      tableTitle,
       currentPage,
       CountPerEachPage,
-      pagedDatas
-      
+      pagedDatas,
+      title,
     };
-  },
-
-  // name: dataName,
-  data() {
-    return {
-      datas: ref([]),
-    };
-  },
-
-  async created() {
-    try {
-      const res = await axios.get(`http://localhost:3001/${this.dataName}`);
-      this.datas = res.data;
-    } catch (e) {
-      console.error(e);
-    }
   },
 
   methods: {
     //Create Modal
-    handler(event) {
+    createModal(event) {
       if (event) {
         this.$router.push({
           path: `/create`,
@@ -130,28 +103,9 @@ export default {
       }
     },
     //Pagination
-    validateEachPage(paginationPage) {
-      //validating pages based on page count
-      if (paginationPage < 1) paginationPage = 1;
-      if (paginationPage > this.numberOfPages())
-        paginationPage = this.numberOfPages();
-      this.pagedDatas=[];
 
-      for (
-        var i = (paginationPage - 1) * this.CountPerEachPage;
-        i < paginationPage * this.CountPerEachPage;
-        i++
-      ) {
-     if(this.datas[i]!==undefined){
-       const dataobj = [this.datas[i]];
-       dataobj.forEach((data)=> this.pagedDatas.push(data))
-       console.log(dataobj)
-     }
-     
-      }
-    },
     ////function for go to previous page
-    getPereviousPage() {
+    getPreviousPage() {
       try {
         if (this.currentPage > 1) {
           this.currentPage--;
@@ -172,14 +126,36 @@ export default {
         console.log(e);
       }
     },
+
+    validateEachPage(paginationPage) {
+      //validating pages based on page count
+      if (paginationPage < 1) paginationPage = 1;
+      if (paginationPage > this.numberOfPages())
+        paginationPage = this.numberOfPages();
+      this.pagedDatas = [];
+
+      for (
+        var i = (paginationPage - 1) * this.CountPerEachPage;
+        i < paginationPage * this.CountPerEachPage;
+        i++
+      ) {
+        if (this.products[i] !== undefined) {
+          const dataobj = [this.products[i]];
+          dataobj.forEach((data) => this.pagedDatas.push(data));
+        }
+      }
+    },
   },
 };
 </script>
 <template>
   <div class="m-10">
     <div class="flex justify-between mb-4">
-      <h4 class="text-xl">{{ tableTitle }}</h4>
-      <button @click="handler" class="bg-green-700 p-2 rounded-md text-white">
+      <h4 class="text-xl">{{ this.title }}</h4>
+      <button
+        @click="createModal"
+        class="bg-green-700 p-2 rounded-md text-white"
+      >
         Бүртгэх
       </button>
     </div>
@@ -187,64 +163,30 @@ export default {
       <div
         class="flex justify-between mb-2 border-t border-slate-200 border-solid"
       >
-        <p>Нийт {{ searchedProducts.length }}</p>
+        <p>Нийт {{ this.products.length }}</p>
         <div class="items-center justify-between">
           <div class="flex items-center space-x-5">
             <a
-              @click="getPereviousPage"
-              class="
-                flex
-                items-center
-                px-2
-                py-2
-                text-gray-800
-                cursor-pointer
-                rounded-md
-              "
+              @click="getPreviousPage"
+              class="flex items-center px-2 py-2 text-gray-800 cursor-pointer rounded-md"
             >
               <span
-                class="
-                  transition
-                  duration-200
-                  ease-in-out
-                  material-icons
-                  text-base
-                "
+                class="transition duration-200 ease-in-out material-icons text-base"
               >
                 arrow_back_ios
               </span>
             </a>
             <p>Хуудас</p>
             <a
-              class="
-                transition
-                duration-500
-                ease-in-out
-                border-t-2
-                hover:border-blue-300
-                py-2
-                mr-4
-                text-gray-700
-                cursor-pointer
-              "
+              class="transition duration-500 ease-in-out border-t-2 hover:border-blue-300 py-2 mr-4 text-gray-700 cursor-pointer"
             >
-               {{ currentPage }}
+              {{ currentPage }}
             </a>
             <p>/</p>
             <a
-              class="
-                transition
-                duration-500
-                ease-in-out
-                border-t-2
-                hover:border-blue-300
-                py-2
-                text-gray-700
-                cursor-pointer
-              "
+              class="transition duration-500 ease-in-out border-t-2 hover:border-blue-300 py-2 text-gray-700 cursor-pointer"
             >
-            
-               {{ this.numberOfPages() }}
+              {{ this.numberOfPages() }}
             </a>
 
             <a
@@ -252,14 +194,7 @@ export default {
               class="px-2 py-2 font-bold cursor-pointer rounded-3xl"
             >
               <span
-                class="
-                  transition
-                  duration-200
-                  ease-in-out
-                  material-icons
-                  text-base
-                  font-bold
-                "
+                class="transition duration-200 ease-in-out material-icons text-base font-bold"
               >
                 arrow_forward_ios
               </span>
@@ -272,12 +207,7 @@ export default {
         <!-- //////////////////////////////////// -->
       </div>
       <table
-        class="
-          table-fixed
-          w-full
-          border-slate-200
-          table table-striped table-bordered
-        "
+        class="table-fixed w-full border-slate-200 table table-striped table-bordered"
       >
         <thead>
           <tr class="border-2 border-slate-200 border-solid">
@@ -305,23 +235,26 @@ export default {
             <td class="px-2"></td>
           </tr>
         </tbody>
-      
-          <tbody class="divide-y-2 divide-slate-200 divide-solid">
-            <!-- <tr v-for="item in searchedProducts" :key="item.id"> -->
-            <tr v-for="item in (this.searchQuery ? searchedProducts : this.pagedDatas)" :key="item.id">
-              <td class="w-16 pl-8 cursor-pointer" @click="deleteModal(item.id)">
-                <img class="w-5 h-5" src="../delete.webp" alt="" />
-              </td>
-              <td class="w-16 pl-8 cursor-pointer" @click="edit(item.id)">
-                <span class="material-icons hover:text-blue-600"> edit </span>
-              </td>
-              <td>{{ item.serialNum }}</td>
-              <td>{{ item.name }}</td>
-              <td>{{ item.detail }}</td>
-              <td>{{ item.date }}</td>
-            </tr>
-          </tbody>
-        
+
+        <tbody class="divide-y-2 divide-slate-200 divide-solid">
+          <tr
+            v-for="item in this.searchQuery
+              ? searchedProducts
+              : this.pagedDatas"
+            :key="item.id"
+          >
+            <td class="w-16 pl-8 cursor-pointer" @click="deleteModal(item.id)">
+              <span class="material-icons hover:text-blue-600"> delete </span>
+            </td>
+            <td class="w-16 pl-8 cursor-pointer" @click="edit(item.id)">
+              <span class="material-icons hover:text-blue-600"> edit </span>
+            </td>
+            <td>{{ item.serialNum }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.detail }}</td>
+            <td>{{ item.date }}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>

@@ -3,25 +3,21 @@ import axios from "axios";
 
 export default {
   name: "RegisterModal",
-  setup() {
-   
-  },
-
   data() {
-     const dataName = this.$route.query.dataName;
+    const dataName = this.$route.query.dataName;
     return {
       id: Math.floor(Math.random(10) * 1000),
       serialNum: "",
       name: "",
       detail: "",
       date: "",
-      dataName: dataName
+      dataName: dataName,
     };
   },
 
   methods: {
     closeModal() {
-      return this.$router.push("/");
+      return this.$router.push(`/table/${this.dataName}`);
     },
 
     async createModal() {
@@ -35,11 +31,14 @@ export default {
           date: this.date,
         };
 
-        let res = await axios.post(`http://localhost:3001/${this.dataName}`, payload);
+        let res = await axios.post(
+          `http://localhost:3001/${this.dataName}`,
+          payload
+        );
       } catch (e) {
         console.error(e);
       }
-      this.$router.push("/");
+      this.$router.push(`/table/${this.dataName}`);
     },
   },
 };
@@ -55,18 +54,7 @@ export default {
       <input
         required=""
         placeholder="Сериал дугаар оруулах pd12473xxxxxx"
-        class="
-          appearance-none
-          block
-          w-full
-          bg-grey-lighter
-          text-grey-darker
-          border border-grey-lighter
-          rounded-lg
-          h-10
-          px-4
-          my-2
-        "
+        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
         type="text"
         v-model="serialNum"
       />
@@ -74,18 +62,7 @@ export default {
       <input
         required=""
         placeholder="Нэр бөглөх Жишээ: Gerege systems"
-        class="
-          appearance-none
-          block
-          w-full
-          bg-grey-lighter
-          text-grey-darker
-          border border-grey-lighter
-          rounded-lg
-          h-10
-          px-4
-          my-2
-        "
+        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
         type="text"
         v-model="name"
       />
@@ -94,18 +71,7 @@ export default {
         required=""
         name="message"
         id=""
-        class="
-          appearance-none
-          block
-          w-full
-          bg-grey-lighter
-          text-grey-darker
-          border border-grey-lighter
-          rounded-lg
-          h-10
-          px-4
-          my-2
-        "
+        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
         placeholder="Тайлбар оруулах"
         v-model="detail"
       ></textarea>
@@ -113,18 +79,7 @@ export default {
       <input
         required=""
         placeholder="Огноо сонгоно уу"
-        class="
-          appearance-none
-          block
-          w-full
-          bg-grey-lighter
-          text-grey-darker
-          border border-grey-lighter
-          rounded-lg
-          h-10
-          px-4
-          my-2
-        "
+        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
         type="date"
         v-model="date"
       />
@@ -132,46 +87,14 @@ export default {
       <div class="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse">
         <button
           @click="closeModal"
-          class="
-            mb-2
-            md:mb-0
-            bg-white
-            px-5
-            py-2
-            text-sm
-            shadow-sm
-            font-medium
-            tracking-wider
-            border
-            text-gray-600
-            rounded-full
-            hover:shadow-lg hover:bg-gray-100
-            my-2
-          "
+          class="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100 my-2"
         >
           Cancel
         </button>
         <button
           @click="createModal"
           type="submit"
-          class="
-            transition
-            duration-200
-            ease-in-out
-            mb-2
-            md:mb-0
-            bg-green-400
-            px-5
-            py-2
-            text-sm
-            shadow-sm
-            font-medium
-            tracking-wider
-            text-white
-            rounded-full
-            hover:shadow-lg hover:bg-green-600
-            my-2
-          "
+          class="transition duration-200 ease-in-out mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-green-600 my-2"
         >
           Create
         </button>
@@ -180,5 +103,3 @@ export default {
   </div>
   <router-view></router-view>
 </template>
-
-
