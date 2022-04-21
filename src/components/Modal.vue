@@ -2,17 +2,39 @@
 import axios from "axios";
 
 export default {
-  name: "RegisterModal",
+  name: "Modal",
   data() {
+    //registr
     const dataName = this.$route.query.dataName;
-    return {
-      id: Math.floor(Math.random(10) * 1000),
-      serialNum: "",
-      name: "",
-      detail: "",
-      date: "",
-      dataName: dataName,
-    };
+
+    if (this.$route.query.id) {
+      //edit
+      let edatas = {
+        id: this.$route.query.id,
+        serialNum: this.$route.query.serialNum,
+        name: this.$route.query.name,
+        detail: this.$route.query.detail,
+        date: this.$route.query.date,
+        dataName: this.$route.query.dataName,
+      };
+      return {
+        id: edatas.id,
+        serialNum: edatas.serialNum,
+        name: edatas.name,
+        detail: edatas.detail,
+        date: edatas.date,
+        dataName: edatas.dataName,
+      };
+    } else {
+      return {
+        id: Math.floor(Math.random(10) * 1000),
+        serialNum: "",
+        name: "",
+        detail: "",
+        date: "",
+        dataName: dataName,
+      };
+    }
   },
 
   methods: {
@@ -20,7 +42,30 @@ export default {
       return this.$router.push(`/table/${this.dataName}`);
     },
 
-    async createModal() {
+    //edit
+    async edited() {
+      alert("edited");
+      try {
+        let payload = {
+          id: this.id,
+          serialNum: this.serialNum,
+          name: this.name,
+          detail: this.detail,
+          date: this.date,
+        };
+
+        let res = await axios.put(
+          `http://localhost:3001/${this.dataName}/${this.id}`,
+          payload
+        );
+      } catch (e) {
+        console.error(e);
+      }
+      this.$router.push(`/table/${this.dataName}`);
+    },
+    //create
+
+    async create() {
       alert("created");
       try {
         let payload = {
@@ -49,7 +94,9 @@ export default {
     <div
       class="w-1/3 h-1/2 bg-white justify-center items-center flex flex-col p-4"
     >
-      <p class="text-3xl">Бүртгэх</p>
+      <p class="text-3xl">
+        {{ this.$route.query.id ? "Засварлах" : "Бүртгэх" }}
+      </p>
 
       <input
         required=""
@@ -92,11 +139,11 @@ export default {
           Cancel
         </button>
         <button
-          @click="createModal"
+          @click="this.$route.query.id ? edited() : create()"
           type="submit"
           class="transition duration-200 ease-in-out mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-green-600 my-2"
         >
-          Create
+          {{ this.$route.query.id ? "done" : "create" }}
         </button>
       </div>
     </div>

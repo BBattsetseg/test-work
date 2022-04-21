@@ -1,7 +1,6 @@
 <script>
 import axios from "axios";
 import { onMounted, reactive, ref, computed } from "vue";
-import RegisterModal from "../components/RegisterModal.vue";
 import BaseUrl from "../api/testApi";
 import { useRoute } from "vue-router";
 export default {
