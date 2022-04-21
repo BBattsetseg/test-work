@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Modal from '../src/components/Modal.vue';
-import Table from '../src/components/Table.vue'
+import ProductPage from '../src/pages/ProductPage.vue';
+import UserPage from '../src/pages/UserPage.vue';
+// import Table from '../src/components/Table.vue'
 import Container from './layout/Container.vue'
 
 const routes = [
@@ -8,16 +10,28 @@ const routes = [
 		path: '/',
 		name: 'home',
         component: Container,
-        redirect: to => {       
-            return { path: '/table/data1'}
-          },
+        // redirect: to => {       
+        //     return { path: '/table/data1'}
+        //   },
         children :[
             {
-                path: '/table/:id',
-                name: 'table',
-                component: Table,
+                path: '/productPage',
+                name: 'ProductPage',
+                component: ProductPage,
                 props:true,
             },
+            {
+                path:'/userPage',
+                name:'UserPage',
+                component: UserPage,
+                props:true,
+            },  
+            // {
+            //     path: '/table/:id',
+            //     name: 'table',
+            //     component: Table,
+            //     props:true,
+            // },
             {
                 path:'/create',
                 name:'modal.create',

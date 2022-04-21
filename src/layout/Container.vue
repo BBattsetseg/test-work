@@ -12,9 +12,8 @@
 <script>
 import Sidebar from "./Sidebar.vue";
 import "material-icons/iconfont/material-icons.css";
-import Table from "../components/Table.vue";
 export default {
   name: "Container",
-  components: { Sidebar, Table },
+  components: { Sidebar },
 };
 </script>

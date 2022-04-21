@@ -4,9 +4,7 @@ import axios from "axios";
 export default {
   name: "Modal",
   data() {
-    //registr
     const dataName = this.$route.query.dataName;
-
     if (this.$route.query.id) {
       //edit
       let edatas = {
@@ -39,7 +37,7 @@ export default {
 
   methods: {
     closeModal() {
-      return this.$router.push(`/table/${this.dataName}`);
+      return this.$router.push(`/`);
     },
 
     //edit
@@ -61,7 +59,7 @@ export default {
       } catch (e) {
         console.error(e);
       }
-      this.$router.push(`/table/${this.dataName}`);
+      this.$router.push(`/`);
     },
     //create
 
@@ -83,7 +81,7 @@ export default {
       } catch (e) {
         console.error(e);
       }
-      this.$router.push(`/table/${this.dataName}`);
+      this.$router.push(`/`);
     },
   },
 };

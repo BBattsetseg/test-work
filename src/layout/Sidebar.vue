@@ -16,19 +16,17 @@
       <div class="m-8 hover:text-slate-800">
         <router-link
           :to="{
-            path: '/table/data1',
-            query: { title: 'Тоног төхөөрөмжийн жагсаалт-1' },
+            path: '/userPage',
           }"
-          >Салбар, төхөөрөмж-1
+          >Хэрэглэгчид
         </router-link>
       </div>
       <div class="m-8 hover:text-slate-800">
         <router-link
           :to="{
-            path: '/table/data2',
-            query: { title: 'Тоног төхөөрөмжийн жагсаалт-2' },
+            path: '/productPage',
           }"
-          >Салбар, төхөөрөмж-2
+          >Бүтээгдэхүүнүүд
         </router-link>
       </div>
     </div>
