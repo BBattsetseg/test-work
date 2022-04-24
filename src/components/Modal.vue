@@ -1,150 +1,62 @@
-<script>
-import axios from "axios";
-
-export default {
-  name: "Modal",
-  data() {
-    const dataName = this.$route.query.dataName;
-    if (this.$route.query.id) {
-      //edit
-      let edatas = {
-        id: this.$route.query.id,
-        serialNum: this.$route.query.serialNum,
-        name: this.$route.query.name,
-        detail: this.$route.query.detail,
-        date: this.$route.query.date,
-        dataName: this.$route.query.dataName,
-      };
-      return {
-        id: edatas.id,
-        serialNum: edatas.serialNum,
-        name: edatas.name,
-        detail: edatas.detail,
-        date: edatas.date,
-        dataName: edatas.dataName,
-      };
-    } else {
-      return {
-        id: Math.floor(Math.random(10) * 1000),
-        serialNum: "",
-        name: "",
-        detail: "",
-        date: "",
-        dataName: dataName,
-      };
-    }
-  },
-
-  methods: {
-    closeModal() {
-      return this.$router.push(`/`);
-    },
-
-    //edit
-    async edited() {
-      alert("edited");
-      try {
-        let payload = {
-          id: this.id,
-          serialNum: this.serialNum,
-          name: this.name,
-          detail: this.detail,
-          date: this.date,
-        };
-
-        let res = await axios.put(
-          `http://localhost:3001/${this.dataName}/${this.id}`,
-          payload
-        );
-      } catch (e) {
-        console.error(e);
-      }
-      this.$router.push(`/`);
-    },
-    //create
-
-    async create() {
-      alert("created");
-      try {
-        let payload = {
-          id: Math.floor(Math.random(10) * 1000),
-          serialNum: this.serialNum,
-          name: this.name,
-          detail: this.detail,
-          date: this.date,
-        };
-
-        let res = await axios.post(
-          `http://localhost:3001/${this.dataName}`,
-          payload
-        );
-      } catch (e) {
-        console.error(e);
-      }
-      this.$router.push(`/`);
-    },
-  },
-};
-</script>
-
 <template>
-  <div class="w-full h-screen bg-current flex justify-center items-center">
-    <div
-      class="w-1/3 h-1/2 bg-white justify-center items-center flex flex-col p-4"
-    >
-      <p class="text-3xl">
-        {{ this.$route.query.id ? "Засварлах" : "Бүртгэх" }}
-      </p>
-
-      <input
-        required=""
-        placeholder="Сериал дугаар оруулах pd12473xxxxxx"
-        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
-        type="text"
-        v-model="serialNum"
-      />
-
-      <input
-        required=""
-        placeholder="Нэр бөглөх Жишээ: Gerege systems"
-        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
-        type="text"
-        v-model="name"
-      />
-
-      <textarea
-        required=""
-        name="message"
-        id=""
-        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
-        placeholder="Тайлбар оруулах"
-        v-model="detail"
-      ></textarea>
-
-      <input
-        required=""
-        placeholder="Огноо сонгоно уу"
-        class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 my-2"
-        type="date"
-        v-model="date"
-      />
-
+  <div
+    class="w-4/5 h-screen bg-current flex justify-center items-center absolute top-0"
+  >
+    <div class="w-1/3 bg-white justify-center items-center flex flex-col p-4">
+      <slot name="modalheader">
+        <p class="text-3xl">
+          {{ this.isEditing ? "Мэдээлэлээ засах" : "Шинээр бүртгэх" }}
+        </p></slot
+      >
+      <slot name="modalbody"> </slot>
       <div class="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse">
-        <button
-          @click="closeModal"
-          class="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100 my-2"
-        >
-          Cancel
-        </button>
-        <button
-          @click="this.$route.query.id ? edited() : create()"
-          type="submit"
-          class="transition duration-200 ease-in-out mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-green-600 my-2"
-        >
-          {{ this.$route.query.id ? "done" : "create" }}
-        </button>
+        <slot name="modalfooter">
+          <button
+            @click="this.isEditing == true ? edited() : create()"
+            type="submit"
+            class="transition duration-200 ease-in-out mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-green-600 my-2"
+          >
+            {{ this.isEditing ? "done" : "create" }}
+          </button>
+          <button
+            @click="close"
+            class="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100 my-2"
+          >
+            Cancel
+          </button>
+        </slot>
       </div>
     </div>
   </div>
   <router-view></router-view>
 </template>
+
+<script>
+export default {
+  name: "Modal",
+  props: {
+    isEditing: {
+      type: Boolean,
+    },
+  },
+
+  setup(props) {
+    console.log(props.isEditing);
+    const isEditing = props.isEditing;
+    return {
+      isEditing,
+    };
+  },
+  methods: {
+    close() {
+      this.$emit("close");
+    },
+    edited() {
+      this.$emit("edited");
+    },
+    create() {
+      this.$emit("create");
+    },
+  },
+};
+</script>

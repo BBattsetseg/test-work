@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Modal from '../src/components/Modal.vue';
-import ProductPage from '../src/pages/ProductPage.vue';
-import UserPage from '../src/pages/UserPage.vue';
-// import Table from '../src/components/Table.vue'
-import Container from './layout/Container.vue'
+import Modal from "./components/Modal.vue";
+import ProductPage from "./pages/ProductPage.vue";
+import UserPage from "./pages/UserPage.vue";
+import Container from "./layout/Container.vue"
 
 const routes = [
 	{
@@ -25,25 +24,19 @@ const routes = [
                 name:'UserPage',
                 component: UserPage,
                 props:true,
-            },  
+            },   
             // {
-            //     path: '/table/:id',
-            //     name: 'table',
-            //     component: Table,
+            //     path:'/create',
+            //     name:'modal.create',
+            //     component: Modal,
             //     props:true,
             // },
-            {
-                path:'/create',
-                name:'modal.create',
-                component: Modal,
-                props:true,
-            },
-            {
-                path:'/edit/:id',
-                name:'modal.edit',
-                component:Modal,
-                props:true,
-            },  
+            // {
+            //     path:'/edit/:id',
+            //     name:'modal.edit',
+            //     component:Modal,
+            //     props:true,
+            // },            
         ]
     },
 	
