@@ -41,7 +41,6 @@ export default {
   },
 
   setup(props) {
-    console.log(props.isEditing);
     const isEditing = props.isEditing;
     return {
       isEditing,

@@ -159,7 +159,6 @@
   </Modal>
 </template>
 
-<!-- //////////////////////   Table   /////////////////////////// -->
 <script>
 import axios from "axios";
 import { onMounted, reactive, ref, computed } from "vue";
@@ -191,8 +190,7 @@ export default {
     let pagedDatas = reactive([]);
     const route = useRoute();
     const dataName = "productdatas";
-    const title = route.query.title;
-    //data
+    //modaldata
     const id = Math.floor(Math.random(10) * 1000);
     const serialNum = "";
     const name = "";
@@ -245,7 +243,6 @@ export default {
   },
 
   methods: {
-    //Create Modal
     openModal() {
       this.setState(true);
       this.isEditing = false;
@@ -269,7 +266,6 @@ export default {
       }
     },
 
-    //Edit Modal
     async editBtn(id) {
       this.isEditing = true;
       const res = await BaseUrl.get(`${this.dataName}/${id}`);
@@ -324,6 +320,7 @@ export default {
       }
       this.setState(false);
     },
+
     //Pagination
 
     ////function for go to previous page
@@ -370,87 +367,3 @@ export default {
   },
 };
 </script>
-
-<!-- //////////////////// Modal ///////////////////// -->
-<!-- <script>
-import axios from "axios";
-export default {
-  name: "Modal",
-  data() {
-    const dataName = this.$route.query.dataName;
-    if (this.$route.query.id) {
-      //edit
-      let edatas = {
-        id: this.$route.query.id,
-        serialNum: this.$route.query.serialNum,
-        name: this.$route.query.name,
-        detail: this.$route.query.detail,
-        date: this.$route.query.date,
-        dataName: this.$route.query.dataName,
-      };
-      return {
-        id: edatas.id,
-        serialNum: edatas.serialNum,
-        name: edatas.name,
-        detail: edatas.detail,
-        date: edatas.date,
-        dataName: edatas.dataName,
-      };
-    } else {
-      return {
-        id: Math.floor(Math.random(10) * 1000),
-        serialNum: "",
-        name: "",
-        detail: "",
-        date: "",
-        dataName: dataName,
-      };
-    }
-  },
-  methods: {
-    closeModal() {
-      return this.$router.push(`/`);
-    },
-    //edit
-    async edited() {
-      alert("edited");
-      try {
-        let payload = {
-          id: this.id,
-          serialNum: this.serialNum,
-          name: this.name,
-          detail: this.detail,
-          date: this.date,
-        };
-        let res = await axios.put(
-          `http://localhost:3001/${this.dataName}/${this.id}`,
-          payload
-        );
-      } catch (e) {
-        console.error(e);
-      }
-      this.$router.push(`/`);
-    },
-    //create
-    async create() {
-      alert("created");
-      try {
-        let payload = {
-          id: Math.floor(Math.random(10) * 1000),
-          serialNum: this.serialNum,
-          name: this.name,
-          detail: this.detail,
-          date: this.date,
-        };
-        let res = await axios.post(
-          `http://localhost:3001/${this.dataName}`,
-          payload
-        );
-      } catch (e) {
-        console.error(e);
-      }
-      this.$router.push(`/`);
-    },
-  },
-};
-</script> -->
